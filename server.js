@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
 
 // GET METHODS
 app.get('/timer', (req, res) => {
-    res.render('timer.html');
+    res.send('Helo World');
 });
 
 server.listen(8082, () => {
