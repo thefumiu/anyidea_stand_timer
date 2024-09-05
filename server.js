@@ -3,7 +3,6 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
-app.use(express.static('files'))
 const server = createServer(app);
 const io = new Server(server);
 
