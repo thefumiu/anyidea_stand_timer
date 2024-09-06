@@ -15,6 +15,11 @@
             margin: 0;
             background-color: black;
         }
+        .target {
+            font-size: 30px;
+            color: white;
+            margin-bottom: 10px;
+        }
         .timer {
             font-size: 96px;
             color: white;
@@ -35,12 +40,14 @@
 </head>
 <body>
 
-<div class="timer" id="timer">10:00.00</div>
-<button class="start-button" id="startButton">Start Countdown</button>
+<div class="target">Target: 10:00.00</div>
+<div class="timer" id="timer">00:00.00</div>
+<button class="start-button" id="startButton">Start Count-Up</button>
 
 <script>
-    let countdownTime = 600000; // 10 minutes in milliseconds
-    let countdownInterval;
+    const targetTime = 600000; // 10 minutes in milliseconds
+    let startTime;
+    let countUpInterval;
     let isCounting = false;
 
     const timerElement = document.getElementById('timer');
@@ -54,23 +61,20 @@
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
     }
 
-    // Start the countdown when the button is clicked
+    // Start the count-up when the button is clicked
     startButton.addEventListener('click', () => {
         if (isCounting) return; // Prevent multiple intervals
         isCounting = true;
 
-        let startTime = Date.now();
-
-        countdownInterval = setInterval(() => {
+        startTime = Date.now();
+        countUpInterval = setInterval(() => {
             const elapsedTime = Date.now() - startTime;
-            const timeRemaining = countdownTime - elapsedTime;
-
-            if (timeRemaining <= 0) {
-                clearInterval(countdownInterval);
-                timerElement.textContent = "00:00.00";
+            if (elapsedTime >= targetTime) {
+                clearInterval(countUpInterval);
+                timerElement.textContent = formatTime(targetTime);
                 isCounting = false;
             } else {
-                timerElement.textContent = formatTime(timeRemaining);
+                timerElement.textContent = formatTime(elapsedTime);
             }
         }, 10); // Update every 10 milliseconds (for smoother milliseconds display)
     });
