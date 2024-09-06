@@ -53,8 +53,7 @@
 <div class="target">Target: 10:00.00</div>
 <div class="timer" id="timer">00:00.00</div>
 <div class="button-container">
-    <button class="button" id="startButton">Start Count-Up</button>
-    <button class="button stop" id="stopButton">Stop Count-Up</button>
+    <button class="button" id="timerButton">Start Timer</button>
 </div>
 
 <script>
@@ -64,8 +63,7 @@
     let isCounting = false;
 
     const timerElement = document.getElementById('timer');
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
+    const timerButton = document.getElementById('timerButton');
 
     function formatTime(milliseconds) {
         const minutes = Math.floor(milliseconds / 60000);
@@ -74,38 +72,37 @@
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
     }
 
-    startButton.addEventListener('click', () => {
-        if (isCounting) return;
-        isCounting = true;
+    timerButton.addEventListener('click', () => {
 
-        startTime = Date.now();
-        countUpInterval = setInterval(() => {
-            const elapsedTime = Date.now() - startTime;
-            if (elapsedTime >= targetTime) {
-                clearInterval(countUpInterval);
-                timerElement.textContent = formatTime(targetTime);
-                isCounting = false;
-            } else {
-                timerElement.textContent = formatTime(elapsedTime);
-            }
-        }, 10);
-    });
+        if (!isCounting) {
+            isCounting = true;
+            timerButton.innerHTML = "Stop Timer";
 
-    stopButton.addEventListener('click', () => {
-        if (!isCounting) return;
-        clearInterval(countUpInterval);
-        isCounting = false;
-
-        const elapsedTime = Date.now() - startTime;
-        const formattedTime = formatTime(elapsedTime);
-        const username = prompt("Enter your username:");
-        if (username) {
-            // Store data in localStorage for demo purposes
-            localStorage.setItem('username', username);
-            localStorage.setItem('stopTime', formattedTime);
-            window.location.href = 'leaderboard'; // Redirect to the leaderboard page
+            startTime = Date.now();
+            countUpInterval = setInterval(() => {
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime >= targetTime) {
+                    clearInterval(countUpInterval);
+                    timerElement.textContent = formatTime(targetTime);
+                    isCounting = false;
+                } else {
+                    timerElement.textContent = formatTime(elapsedTime);
+                }
+            }, 10);
         }
+
+        else {
+            isCounting = false;
+            clearInterval(countUpInterval);
+            timerButton.innerHTML = "Start Timer";
+
+            const elapsedTime = Date.now() - startTime;
+            const formattedTime = formatTime(elapsedTime);
+        }
+
+        
     });
+
 </script>
 
 </body>
