@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10-Minute Countdown Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+        }
+        .timer {
+            font-size: 96px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        .start-button {
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+        }
+        .start-button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="timer" id="timer">10:00.00</div>
+<button class="start-button" id="startButton">Start Countdown</button>
+
+<script>
+    let countdownTime = 600000; // 10 minutes in milliseconds
+    let countdownInterval;
+    let isCounting = false;
+
+    const timerElement = document.getElementById('timer');
+    const startButton = document.getElementById('startButton');
+
+    // Format the time (MM:SS.ss)
+    function formatTime(milliseconds) {
+        const minutes = Math.floor(milliseconds / 60000);
+        const seconds = Math.floor((milliseconds % 60000) / 1000);
+        const millis = Math.floor((milliseconds % 1000) / 10); // Two digits for milliseconds
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
+    }
+
+    // Start the countdown when the button is clicked
+    startButton.addEventListener('click', () => {
+        if (isCounting) return; // Prevent multiple intervals
+        isCounting = true;
+
+        let startTime = Date.now();
+
+        countdownInterval = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            const timeRemaining = countdownTime - elapsedTime;
+
+            if (timeRemaining <= 0) {
+                clearInterval(countdownInterval);
+                timerElement.textContent = "00:00.00";
+                isCounting = false;
+            } else {
+                timerElement.textContent = formatTime(timeRemaining);
+            }
+        }, 10); // Update every 10 milliseconds (for smoother milliseconds display)
+    });
+</script>
+
+</body>
+</html>
