@@ -2,6 +2,9 @@ const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
+const path = require('path'); 
+
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -20,7 +23,9 @@ io.on('connection', (socket) => {
 
 // GET METHODS
 app.get('/timer', (req, res) => {
-    res.send('Helo World');
+    //res.send('Helo World');
+    res.sendFile(path.join(__dirname, 'timer.html'));
+
 });
 
 server.listen(8082, () => {
