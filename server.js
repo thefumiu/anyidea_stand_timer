@@ -22,11 +22,32 @@ io.on('connection', (socket) => {
 });
 
 // GET METHODS
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+
 app.get('/timer', (req, res) => {
-    //res.send('Helo World');
+    
     res.sendFile(path.join(__dirname, 'timer.html'));
 
 });
+
+app.get('/username', (req, res) => {
+    
+    res.sendFile(path.join(__dirname, 'username.html'));
+
+});
+
+app.get('/leaderboard', (req, res) => {
+    
+    res.sendFile(path.join(__dirname, 'leaderboard.html'));
+
+});
+
+
+
 
 server.listen(8082, () => {
     console.log('server running at http://localhost:8082');

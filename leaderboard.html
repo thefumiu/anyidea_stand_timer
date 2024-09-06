@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+        .container {
+            font-size: 24px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Leaderboard</h1>
+    <p id="leaderboard"></p>
+    <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+        const username = localStorage.getItem('username');
+        const stopTime = localStorage.getItem('stopTime');
+
+        if (username && stopTime) {
+            document.getElementById('leaderboard').textContent = `Username: ${username}\nStop Time: ${stopTime}`;
+        } else {
+            document.getElementById('leaderboard').textContent = 'No data available.';
+        }
+
+        // Clear data after showing it (optional)
+        localStorage.removeItem('username');
+        localStorage.removeItem('stopTime');
+    });
+</script>
+
+</body>
+</html>

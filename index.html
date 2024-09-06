@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
+        .title {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .button {
+            padding: 15px 30px;
+            font-size: 24px;
+            color: white;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title">Control Panel</div>
+    <div class="button-container">
+        <a href="/username" class="button">Enter Username</a>
+        <a href="/timer" class="button">Start Timer</a>
+        <a href="/leaderboard" class="button">View Leaderboard</a>
+    </div>
+
+</body>
+</html>

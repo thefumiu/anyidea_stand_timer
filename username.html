@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Username</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+        }
+        .container {
+            text-align: center;
+        }
+        .input-field {
+            font-size: 20px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 20px;
+            color: white;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Enter Your Username</h1>
+    <input type="text" id="usernameInput" class="input-field" placeholder="Enter username" />
+    <button class="button" id="submitButton">Submit</button>
+</div>
+
+<script>
+    const submitButton = document.getElementById('submitButton');
+    const usernameInput = document.getElementById('usernameInput');
+
+    submitButton.addEventListener('click', () => {
+        const username = usernameInput.value.trim();
+        if (username) {
+            localStorage.setItem('username', username);
+            window.location.href = 'timer'; // Redirect to the timer page
+        } else {
+            alert('Please enter a username.');
+        }
+    });
+</script>
+
+</body>
+</html>
