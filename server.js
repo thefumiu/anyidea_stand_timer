@@ -45,6 +45,16 @@ app.get('/leaderboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'leaderboard.html'));
 });
 
+app.get('/leaderboard-data', async (req, res) => {
+    try {
+        const leaderboard = await Leaderboard.find().sort({ time: -1 }).limit(10); // Adjust sorting and limit as needed
+        res.json(leaderboard);
+    } catch (err) {
+        res.status(500).send('Error fetching leaderboard');
+    }
+});
+
+
 // POST method to save leaderboard entry
 app.post('/add-leaderboard', async (req, res) => {
     const { username, time } = req.body;
