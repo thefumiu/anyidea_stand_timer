@@ -89,7 +89,6 @@ io.on('connection', (socket) => {
 
     socket.on('add-to-leaderboard', (data) => {
         io.emit("add-to-leaderboard", data)
-        console.log(data)
     });
 });
 

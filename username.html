@@ -44,6 +44,7 @@
     </div>
 </body>
 </html>
+
 <script>
     const submitButton = document.getElementById('submitButton');
     const usernameInput = document.getElementById('usernameInput');
@@ -52,7 +53,7 @@
         const username = usernameInput.value.trim();
         if (username) {
             localStorage.setItem('username', username);
-            window.location.href = 'timer'; // Redirect to the timer page
+            window.open("timer");
         } else {
             alert('Please enter a username.');
         }

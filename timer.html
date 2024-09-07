@@ -30,10 +30,6 @@
             color: white;
             margin-bottom: 10px;
         }
-        .button-container {
-            display: flex;
-            gap: 10px;
-        }
         .button {
             padding: 10px 20px;
             font-size: 20px;
@@ -42,25 +38,16 @@
             border: none;
             cursor: pointer;
         }
-        .button:hover {
-            background-color: #555;
-        }
-        .button.stop {
-            background-color: #b33;
-        }
-        .button.stop:hover {
-            background-color: #d44;
-        }
     </style>
 </head>
 <body>
-
 <div class="username" id="username">Username: Not set</div>
 <div class="target">Target: 10:00.00</div>
 <div class="timer" id="timer">00:00.00</div>
-<div class="button-container">
-    <button class="button" id="timerButton">Start Timer</button>
-</div>
+<button class="button" id="timerButton">Start Timer</button>
+</body>
+</html>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
     const socket = io();
@@ -74,10 +61,7 @@
     const usernameElement = document.getElementById('username');
 
     // Fetch username from localStorage
-    const username = localStorage.getItem('username');
-    if (username) {
-        usernameElement.textContent = `Username: ${username}`;
-    }
+    const username = "*For Now Nothing*";
 
     function formatTime(milliseconds) {
         const minutes = Math.floor(milliseconds / 60000);
@@ -90,6 +74,7 @@
         if (!isCounting) {
             isCounting = true;
             timerButton.innerHTML = "Stop Timer";
+            timerButton.style.background = "#d44";
             startTime = Date.now();
             countUpInterval = setInterval(() => {
                 const elapsedTime = Date.now() - startTime;
@@ -105,14 +90,11 @@
             isCounting = false;
             clearInterval(countUpInterval);
             timerButton.innerHTML = "Start Timer";
+            timerButton.style.background = "#333";
             const elapsedTime = Date.now() - startTime;
             const formattedTime = formatTime(elapsedTime);
 
-            socket.emit("add-to-leaderboard", {username: username || 'Anonymous', time: formattedTime
-            });
+            socket.emit("add-to-leaderboard", {username: username || 'Anonymous', time: formattedTime});
         }
     });
 </script>
-
-</body>
-</html>

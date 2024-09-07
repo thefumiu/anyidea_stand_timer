@@ -35,12 +35,13 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>Leaderboard</h1>
     <p id="leaderboard"></p>
     <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
 </div>
+</body>
+</html>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -59,5 +60,3 @@ socket.on("add-to-leaderboard", (data) => {
     
 });
 </script>
-</body>
-</html>
