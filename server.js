@@ -2,13 +2,14 @@ const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const path = require('path'); 
+const mongodb = require("mongodb");
 
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-// GET METHODS
+// GET METHOD
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
