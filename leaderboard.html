@@ -35,26 +35,34 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Leaderboard</h1>
-        <p id="leaderboard"></p>
-        <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
-    </div>
-</body>
-</html>
+
+<div class="container">
+    <h1>Leaderboard</h1>
+    <p id="leaderboard">Loading...</p>
+    <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
+</div>
+
 <script>
-    window.addEventListener('load', () => {
-        const username = localStorage.getItem('username');
-        const stopTime = localStorage.getItem('stopTime');
+    window.addEventListener('load', async () => {
+        try {
+            const response = await fetch('/get-leaderboard');
+            const leaderboard = await response.json();
+            const leaderboardElement = document.getElementById('leaderboard');
 
-        if (username && stopTime) {
-            document.getElementById('leaderboard').textContent = `Username: ${username}\nStop Time: ${stopTime}`;
-        } else {
-            document.getElementById('leaderboard').textContent = 'No data available.';
+            if (leaderboard.length === 0) {
+                leaderboardElement.textContent = 'No data available.';
+                return;
+            }
+
+            leaderboardElement.innerHTML = leaderboard.map(entry => 
+                `Username: ${entry.username} - Stop Time: ${entry.time}<br>`
+            ).join('');
+        } catch (error) {
+            console.error('Error fetching leaderboard:', error);
+            document.getElementById('leaderboard').textContent = 'Error loading leaderboard.';
         }
-
-        // Clear data after showing it (optional)
-        localStorage.removeItem('username');
-        localStorage.removeItem('stopTime');
     });
 </script>
+
+</body>
+</html>

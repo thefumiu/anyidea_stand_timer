@@ -25,6 +25,11 @@
             color: white;
             margin-bottom: 20px;
         }
+        .username {
+            font-size: 24px;
+            color: white;
+            margin-bottom: 10px;
+        }
         .button-container {
             display: flex;
             gap: 10px;
@@ -49,13 +54,14 @@
     </style>
 </head>
 <body>
-    <div class="target">Target: 10:00.00</div>
-    <div class="timer" id="timer">00:00.00</div>
-    <div class="button-container">
-        <button class="button" id="timerButton">Start Timer</button>
-    </div>
-</body>
-</html>
+
+<div class="username" id="username">Username: Not set</div>
+<div class="target">Target: 10:00.00</div>
+<div class="timer" id="timer">00:00.00</div>
+<div class="button-container">
+    <button class="button" id="timerButton">Start Timer</button>
+</div>
+
 <script>
     const targetTime = 600000; // 10 minutes in milliseconds
     let startTime;
@@ -64,6 +70,13 @@
 
     const timerElement = document.getElementById('timer');
     const timerButton = document.getElementById('timerButton');
+    const usernameElement = document.getElementById('username');
+
+    // Fetch username from localStorage
+    const username = localStorage.getItem('username');
+    if (username) {
+        usernameElement.textContent = `Username: ${username}`;
+    }
 
     function formatTime(milliseconds) {
         const minutes = Math.floor(milliseconds / 60000);
@@ -72,11 +85,10 @@
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
     }
 
-    timerButton.addEventListener('click', () => {
+    timerButton.addEventListener('click', async () => {
         if (!isCounting) {
             isCounting = true;
             timerButton.innerHTML = "Stop Timer";
-
             startTime = Date.now();
             countUpInterval = setInterval(() => {
                 const elapsedTime = Date.now() - startTime;
@@ -88,18 +100,33 @@
                     timerElement.textContent = formatTime(elapsedTime);
                 }
             }, 10);
-        }
-
-        else {
+        } else {
             isCounting = false;
             clearInterval(countUpInterval);
             timerButton.innerHTML = "Start Timer";
-
             const elapsedTime = Date.now() - startTime;
             const formattedTime = formatTime(elapsedTime);
+
+            // Save to leaderboard after timer stops
+            const response = await fetch('/add-leaderboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username || 'Anonymous',
+                    time: formattedTime
+                })
+            });
+
+            if (response.ok) {
+                window.location.href = 'leaderboard'; // Redirect to leaderboard page
+            } else {
+                alert('Failed to save leaderboard entry.');
+            }
         }
-
-        
     });
-
 </script>
+
+</body>
+</html>
