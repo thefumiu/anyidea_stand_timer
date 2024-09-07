@@ -42,29 +42,22 @@
     <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    function fetchLeaderboard() {
-        fetch('/leaderboard-data')
-            .then(response => response.json())
-            .then(data => {
-                const leaderboardElement = document.getElementById('leaderboard');
-                if (data.length > 0) {
-                    leaderboardElement.innerHTML = data.map(entry => `Username: ${entry.username} - Time: ${entry.time}`).join('<br>');
-                } else {
-                    leaderboardElement.textContent = 'No data available.';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching leaderboard:', error);
-            });
+const socket = io();
+
+socket.on("add-to-leaderboard", (data) => {
+    console.log(data);
+    
+    try {
+        const leaderboardElement = document.getElementById('leaderboard');
+        leaderboardElement.innerHTML += "Username:" + data.username + "- Time:" + data.time + "<br>";
+        
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
     }
-
-    // Fetch leaderboard data every 5 seconds
-    setInterval(fetchLeaderboard, 5000);
-
-    // Fetch leaderboard on page load
-    window.onload = fetchLeaderboard;
+    
+});
 </script>
-
 </body>
 </html>

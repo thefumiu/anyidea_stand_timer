@@ -61,8 +61,9 @@
 <div class="button-container">
     <button class="button" id="timerButton">Start Timer</button>
 </div>
-
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    const socket = io();
     const targetTime = 600000; // 10 minutes in milliseconds
     let startTime;
     let countUpInterval;
@@ -107,23 +108,8 @@
             const elapsedTime = Date.now() - startTime;
             const formattedTime = formatTime(elapsedTime);
 
-            // Save to leaderboard after timer stops
-            const response = await fetch('/add-leaderboard', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username || 'Anonymous',
-                    time: formattedTime
-                })
+            socket.emit("add-to-leaderboard", {username: username || 'Anonymous', time: formattedTime
             });
-
-            if (response.ok) {
-                window.location.href = 'leaderboard'; // Redirect to leaderboard page
-            } else {
-                alert('Failed to save leaderboard entry.');
-            }
         }
     });
 </script>

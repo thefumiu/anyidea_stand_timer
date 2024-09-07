@@ -48,7 +48,7 @@ app.get('/leaderboard', (req, res) => {
 app.get('/leaderboard-data', async (req, res) => {
     try {
         const leaderboard = await Leaderboard.find().sort({ time: -1 }).limit(10); // Adjust sorting and limit as needed
-        res.json(leaderboard);
+        io.emit("add-to-leaderboard", leaderboard)
     } catch (err) {
         res.status(500).send('Error fetching leaderboard');
     }
@@ -85,15 +85,11 @@ app.get('/get-leaderboard', async (req, res) => {
 });
 
 // Socket.io setup
-let onlineUsers = 0;
-
 io.on('connection', (socket) => {
-    onlineUsers++;
-    io.emit("value ONLINE_USERS", onlineUsers);
 
-    socket.on('disconnect', () => {
-        onlineUsers--;
-        io.emit("value ONLINE_USERS", onlineUsers);
+    socket.on('add-to-leaderboard', (data) => {
+        io.emit("add-to-leaderboard", data)
+        console.log(data)
     });
 });
 
