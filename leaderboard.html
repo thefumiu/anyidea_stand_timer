@@ -35,13 +35,13 @@
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Leaderboard</h1>
-    <p id="leaderboard"></p>
-    <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
-</div>
-
+    <div class="container">
+        <h1>Leaderboard</h1>
+        <p id="leaderboard"></p>
+        <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
+    </div>
+</body>
+</html>
 <script>
     window.addEventListener('load', () => {
         const username = localStorage.getItem('username');
@@ -58,6 +58,3 @@
         localStorage.removeItem('stopTime');
     });
 </script>
-
-</body>
-</html>

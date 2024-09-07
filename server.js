@@ -10,7 +10,6 @@ const server = createServer(app);
 const io = new Server(server);
 
 // GET METHOD
-
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
