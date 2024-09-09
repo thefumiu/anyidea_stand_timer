@@ -54,7 +54,7 @@
             if (username) {
                 localStorage.setItem('username', username);
                 socket.emit('update-username', username);
-                window.location.href = "timer";
+                //window.location.href = "timer";
             } else {
                 alert('Please enter a username.');
             }
