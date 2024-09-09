@@ -56,13 +56,17 @@ const targetTime = 600000; // 10 minutes in milliseconds
 let startTime;
 let countUpInterval;
 let isCounting = false;
+let username = "Anonymous";
 
 const timerElement = document.getElementById('timer');
 const timerButton = document.getElementById('timerButton');
 const usernameElement = document.getElementById('username');
 
+socket.on("save-username-to-cache", (data) => {
+    username = data;
+})
+
 // Fetch username from localStorage
-let username = localStorage.getItem('username') || 'Anonymous';
 usernameElement.textContent = `Username: ${username}`;
 
 function formatTime(milliseconds) {
@@ -96,12 +100,13 @@ timerButton.addEventListener('click', async () => {
         const elapsedTime = Date.now() - startTime;
         const formattedTime = formatTime(elapsedTime);
 
-        socket.emit("add-to-leaderboard", {username: username, time: formattedTime});
+        // Send leaderboard data in real-time
+        socket.emit("update-leaderboard", {username, time: formattedTime});
     }
 });
 
-// Update the username on the timer page when it's changed on the username page
-socket.on('username-updated', (newUsername) => {
+// Get username data in real-time
+socket.on('save-username-to-cache', (newUsername) => {
     username = newUsername;
     usernameElement.textContent = `Username: ${username}`;
 });

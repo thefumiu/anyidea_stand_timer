@@ -64,17 +64,16 @@
 <script>
 const socket = io();
 
-function updateLeaderboard(entries) {
+function updateLeaderboard(data) {
     const leaderboardElement = document.getElementById('leaderboard');
     leaderboardElement.innerHTML = ''; // Clear existing entries
-
-    entries.forEach(entry => {
+    data.forEach(d => {
         const row = document.createElement('tr');
         const usernameCell = document.createElement('td');
         const timeCell = document.createElement('td');
 
-        usernameCell.textContent = entry.username;
-        timeCell.textContent = entry.time;
+        usernameCell.textContent = d.username;
+        timeCell.textContent = d.time;
 
         row.appendChild(usernameCell);
         row.appendChild(timeCell);
@@ -82,23 +81,9 @@ function updateLeaderboard(entries) {
     });
 }
 
-// Fetch leaderboard data when the page loads
-async function fetchLeaderboard() {
-    try {
-        const response = await fetch('/get-leaderboard');
-        const data = await response.json();
-        updateLeaderboard(data);
-    } catch (error) {
-        console.error('Error fetching leaderboard data:', error);
-    }
-}
-
-// Initial load of leaderboard data
-fetchLeaderboard();
-
-// Listen for real-time updates
-socket.on('update-leaderboard', () => {
-    fetchLeaderboard();
+// Get leaderboard data in real-time
+socket.on("update-leaderboard", data => {
+    updateLeaderboard(data);
 });
 </script>
 </body>

@@ -49,15 +49,9 @@
         const submitButton = document.getElementById('submitButton');
         const usernameInput = document.getElementById('usernameInput');
 
+        // Send username data in real-time
         submitButton.addEventListener('click', () => {
-            const username = usernameInput.value.trim();
-            if (username) {
-                localStorage.setItem('username', username);
-                socket.emit('update-username', username);
-                //window.location.href = "timer";
-            } else {
-                alert('Please enter a username.');
-            }
+            socket.emit('save-username-to-cache', usernameInput.value.trim());
         });
     </script>
 </body>
