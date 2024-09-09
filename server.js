@@ -46,8 +46,8 @@ app.get('/leaderboard', (req, res) => {
 
 app.get('/leaderboard-data', async (req, res) => {
     try {
-        const leaderboard = await Leaderboard.find().sort({ time: 1 }).limit(10); // Sort ascending for better display
-        res.json(leaderboard);
+        const leaderboard = await Leaderboard.find().sort({ time: -1 }).limit(10); // Adjust sorting and limit as needed
+        io.emit("update-leaderboard", leaderboard); // Notify clients to update leaderboard
     } catch (err) {
         res.status(500).send('Error fetching leaderboard');
     }
@@ -64,10 +64,21 @@ app.post('/add-leaderboard', async (req, res) => {
     try {
         const newEntry = new Leaderboard({ username, time });
         await newEntry.save();
-        io.emit('update-leaderboard'); // Notify clients to update leaderboard
         res.status(201).json({ message: 'Entry added successfully' });
+        io.emit('update-leaderboard'); // Notify all clients to update leaderboard
     } catch (error) {
         console.error('Error adding entry:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// GET method to retrieve leaderboard
+app.get('/get-leaderboard', async (req, res) => {
+    try {
+        const entries = await Leaderboard.find().sort({ time: -1 }).exec();
+        res.json(entries);
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -76,6 +87,7 @@ app.post('/add-leaderboard', async (req, res) => {
 io.on('connection', (socket) => {
     console.log('A user connected');
 
+    // Handle adding to leaderboard
     socket.on('add-to-leaderboard', async (data) => {
         console.log('Received leaderboard data:', data);
 
@@ -91,6 +103,12 @@ io.on('connection', (socket) => {
         } catch (error) {
             console.error('Error saving leaderboard entry:', error);
         }
+    });
+
+    // Handle username update
+    socket.on('update-username', (username) => {
+        console.log('Username updated:', username);
+        io.emit('username-updated', username); // Notify all clients of username update
     });
 
     socket.on('disconnect', () => {

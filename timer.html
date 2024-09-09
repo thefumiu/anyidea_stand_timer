@@ -38,6 +38,9 @@
             border: none;
             cursor: pointer;
         }
+        .button:hover {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
@@ -48,55 +51,60 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io();
-    const targetTime = 600000; // 10 minutes in milliseconds
-    let startTime;
-    let countUpInterval;
-    let isCounting = false;
+const socket = io();
+const targetTime = 600000; // 10 minutes in milliseconds
+let startTime;
+let countUpInterval;
+let isCounting = false;
 
-    const timerElement = document.getElementById('timer');
-    const timerButton = document.getElementById('timerButton');
-    const usernameElement = document.getElementById('username');
+const timerElement = document.getElementById('timer');
+const timerButton = document.getElementById('timerButton');
+const usernameElement = document.getElementById('username');
 
-    // Fetch username from localStorage
-    const username = localStorage.getItem('username') || 'Anonymous';
-    usernameElement.textContent = `Username: ${username}`;
+// Fetch username from localStorage
+let username = localStorage.getItem('username') || 'Anonymous';
+usernameElement.textContent = `Username: ${username}`;
 
-    function formatTime(milliseconds) {
-        const minutes = Math.floor(milliseconds / 60000);
-        const seconds = Math.floor((milliseconds % 60000) / 1000);
-        const millis = Math.floor((milliseconds % 1000) / 10);
-        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
-    }
+function formatTime(milliseconds) {
+    const minutes = Math.floor(milliseconds / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+    const millis = Math.floor((milliseconds % 1000) / 10);
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
+}
 
-    timerButton.addEventListener('click', () => {
-        if (!isCounting) {
-            isCounting = true;
-            timerButton.innerHTML = "Stop Timer";
-            timerButton.style.background = "#d44";
-            startTime = Date.now();
-            countUpInterval = setInterval(() => {
-                const elapsedTime = Date.now() - startTime;
-                if (elapsedTime >= targetTime) {
-                    clearInterval(countUpInterval);
-                    timerElement.textContent = formatTime(targetTime);
-                    isCounting = false;
-                } else {
-                    timerElement.textContent = formatTime(elapsedTime);
-                }
-            }, 10);
-        } else {
-            isCounting = false;
-            clearInterval(countUpInterval);
-            timerButton.innerHTML = "Start Timer";
-            timerButton.style.background = "#333";
+timerButton.addEventListener('click', async () => {
+    if (!isCounting) {
+        isCounting = true;
+        timerButton.innerHTML = "Stop Timer";
+        timerButton.style.background = "#d44";
+        startTime = Date.now();
+        countUpInterval = setInterval(() => {
             const elapsedTime = Date.now() - startTime;
-            const formattedTime = formatTime(elapsedTime);
+            if (elapsedTime >= targetTime) {
+                clearInterval(countUpInterval);
+                timerElement.textContent = formatTime(targetTime);
+                isCounting = false;
+            } else {
+                timerElement.textContent = formatTime(elapsedTime);
+            }
+        }, 10);
+    } else {
+        isCounting = false;
+        clearInterval(countUpInterval);
+        timerButton.innerHTML = "Start Timer";
+        timerButton.style.background = "#333";
+        const elapsedTime = Date.now() - startTime;
+        const formattedTime = formatTime(elapsedTime);
 
-            // Emit data to the server
-            socket.emit("add-to-leaderboard", { username, time: formattedTime });
-        }
-    });
+        socket.emit("add-to-leaderboard", {username: username, time: formattedTime});
+    }
+});
+
+// Update the username on the timer page when it's changed on the username page
+socket.on('username-updated', (newUsername) => {
+    username = newUsername;
+    usernameElement.textContent = `Username: ${username}`;
+});
 </script>
 </body>
 </html>

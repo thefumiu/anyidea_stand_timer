@@ -42,6 +42,7 @@
         <input type="text" id="usernameInput" class="input-field" placeholder="Enter username" />
         <button class="button" id="submitButton">Submit</button>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -52,8 +53,8 @@
             const username = usernameInput.value.trim();
             if (username) {
                 localStorage.setItem('username', username);
-                socket.emit('update-username', username); // Emit username update
-                //window.open("timer", "_self"); // Open timer page in the same window
+                socket.emit('update-username', username);
+                window.location.href = "timer";
             } else {
                 alert('Please enter a username.');
             }

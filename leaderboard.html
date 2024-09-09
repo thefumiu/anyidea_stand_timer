@@ -82,18 +82,24 @@ function updateLeaderboard(entries) {
     });
 }
 
-socket.on('update-leaderboard', async () => {
+// Fetch leaderboard data when the page loads
+async function fetchLeaderboard() {
     try {
-        const response = await fetch('/leaderboard-data');
+        const response = await fetch('/get-leaderboard');
         const data = await response.json();
         updateLeaderboard(data);
     } catch (error) {
         console.error('Error fetching leaderboard data:', error);
     }
-});
+}
 
 // Initial load of leaderboard data
-socket.emit('update-leaderboard');
+fetchLeaderboard();
+
+// Listen for real-time updates
+socket.on('update-leaderboard', () => {
+    fetchLeaderboard();
+});
 </script>
 </body>
 </html>
