@@ -32,31 +32,68 @@
         .button:hover {
             background-color: #555;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid white;
+            padding: 8px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Leaderboard</h1>
-    <p id="leaderboard"></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboard">
+            <!-- Leaderboard entries will be inserted here -->
+        </tbody>
+    </table>
     <button class="button" onclick="window.location.href='username'">Back to Username Input</button>
 </div>
-</body>
-</html>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket = io();
 
-socket.on("add-to-leaderboard", (data) => {
-    console.log(data);
-    
+function updateLeaderboard(entries) {
+    const leaderboardElement = document.getElementById('leaderboard');
+    leaderboardElement.innerHTML = ''; // Clear existing entries
+
+    entries.forEach(entry => {
+        const row = document.createElement('tr');
+        const usernameCell = document.createElement('td');
+        const timeCell = document.createElement('td');
+
+        usernameCell.textContent = entry.username;
+        timeCell.textContent = entry.time;
+
+        row.appendChild(usernameCell);
+        row.appendChild(timeCell);
+        leaderboardElement.appendChild(row);
+    });
+}
+
+socket.on('update-leaderboard', async () => {
     try {
-        const leaderboardElement = document.getElementById('leaderboard');
-        leaderboardElement.innerHTML += "Username:" + data.username + "- Time:" + data.time + "<br>";
-        
+        const response = await fetch('/leaderboard-data');
+        const data = await response.json();
+        updateLeaderboard(data);
     } catch (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error('Error fetching leaderboard data:', error);
     }
-    
 });
+
+// Initial load of leaderboard data
+socket.emit('update-leaderboard');
 </script>
+</body>
+</html>

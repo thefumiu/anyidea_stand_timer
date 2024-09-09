@@ -13,7 +13,6 @@ mongoose.connect('mongodb://localhost:27017/timerDB')
   .then(() => console.log('MongoDB connected...'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-
 // Define Schema and Model
 const leaderboardSchema = new mongoose.Schema({
   username: String,
@@ -47,18 +46,17 @@ app.get('/leaderboard', (req, res) => {
 
 app.get('/leaderboard-data', async (req, res) => {
     try {
-        const leaderboard = await Leaderboard.find().sort({ time: -1 }).limit(10); // Adjust sorting and limit as needed
-        io.emit("add-to-leaderboard", leaderboard)
+        const leaderboard = await Leaderboard.find().sort({ time: 1 }).limit(10); // Sort ascending for better display
+        res.json(leaderboard);
     } catch (err) {
         res.status(500).send('Error fetching leaderboard');
     }
 });
 
-
 // POST method to save leaderboard entry
 app.post('/add-leaderboard', async (req, res) => {
     const { username, time } = req.body;
-    
+
     if (!username || !time) {
         return res.status(400).json({ message: 'Username and time are required' });
     }
@@ -66,6 +64,7 @@ app.post('/add-leaderboard', async (req, res) => {
     try {
         const newEntry = new Leaderboard({ username, time });
         await newEntry.save();
+        io.emit('update-leaderboard'); // Notify clients to update leaderboard
         res.status(201).json({ message: 'Entry added successfully' });
     } catch (error) {
         console.error('Error adding entry:', error);
@@ -73,22 +72,29 @@ app.post('/add-leaderboard', async (req, res) => {
     }
 });
 
-// GET method to retrieve leaderboard
-app.get('/get-leaderboard', async (req, res) => {
-    try {
-        const entries = await Leaderboard.find().sort({ time: -1 }).exec();
-        res.json(entries);
-    } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
 // Socket.io setup
 io.on('connection', (socket) => {
+    console.log('A user connected');
 
-    socket.on('add-to-leaderboard', (data) => {
-        io.emit("add-to-leaderboard", data)
+    socket.on('add-to-leaderboard', async (data) => {
+        console.log('Received leaderboard data:', data);
+
+        const { username, time } = data;
+        if (!username || !time) {
+            return;
+        }
+
+        try {
+            const newEntry = new Leaderboard({ username, time });
+            await newEntry.save();
+            io.emit('update-leaderboard'); // Notify all clients to update leaderboard
+        } catch (error) {
+            console.error('Error saving leaderboard entry:', error);
+        }
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
     });
 });
 
