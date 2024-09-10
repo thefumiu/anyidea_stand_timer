@@ -42,6 +42,13 @@ app.get('/leaderboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'leaderboard.html'));
 });
 
+app.post('/only-for-external-button', (req, res) => {
+    console.log("external-pressed");
+    res.sendStatus(200);
+    
+    io.emit("click-from-external-button");
+});
+
 // Socket.io setup
 io.on('connection', (socket) => {
     // Fetching data from /username
@@ -49,6 +56,8 @@ io.on('connection', (socket) => {
         // Global variable (not cookies)
         tmp_username = data;
         io.emit("save-username-to-cache", data);
+        console.log("Username setted: ", tmp_username);
+        
     });
     // Updating Leaderboard with new data
     socket.on('update-leaderboard', async (data) => {

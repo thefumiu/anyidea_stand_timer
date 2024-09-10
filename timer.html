@@ -76,7 +76,7 @@ function formatTime(milliseconds) {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(2, '0')}`;
 }
 
-timerButton.addEventListener('click', async () => {
+function buttonToggle() {
     if (!isCounting) {
         isCounting = true;
         timerButton.innerHTML = "Stop Timer";
@@ -103,6 +103,14 @@ timerButton.addEventListener('click', async () => {
         // Send leaderboard data in real-time
         socket.emit("update-leaderboard", {username, time: formattedTime});
     }
+}
+
+timerButton.addEventListener('click', async () => {
+    buttonToggle();
+});
+
+socket.on('click-from-external-button', () => {
+    buttonToggle();
 });
 
 // Get username data in real-time
