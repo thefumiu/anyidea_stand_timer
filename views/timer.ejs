@@ -48,7 +48,7 @@
             const elapsedTime = Date.now() - startTime;
             const formattedTime = formatTime(elapsedTime);
             // Send leaderboard data in real-time
-            socket.emit("update-leaderboard", {username, time: formattedTime});
+            socket.emit("update-leaderboard", {username, time: formattedTime, timex: Math.abs(10000 - elapsedTime)});
         }
     }
     timerButton.addEventListener('click', async () => {

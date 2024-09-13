@@ -17,7 +17,8 @@ mongoose.connect('mongodb://localhost:27017/timerDB')
 // Define Schema and Model
 const leaderboardSchema = new mongoose.Schema({
   username: String,
-  time: String
+  time: String,
+  timex: String
 });
 
 const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
@@ -64,9 +65,9 @@ io.on('connection', (socket) => {
     // Updating Leaderboard with new data
     socket.on('update-leaderboard', async (data) => {
         try {
-            const newEntry = new Leaderboard({username: data.username, time: data.time}); 
+            const newEntry = new Leaderboard({username: data.username, time: data.time, timex: data.timex}); 
             await newEntry.save();
-            const leaderboard = await Leaderboard.find().sort({ time: -1 }).limit(10); 
+            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(10); 
             io.emit('update-leaderboard', leaderboard); // Notify all clients to update leaderboard
         } catch (error) {
             console.error('update-leaderboard:', error);
