@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("parts/head", {title: title}) %>
+<body>
+    <div class="container panel">
+        <h1>Enter Student's Name</h1>
+        <input type="text" id="usernameInput" class="panel input-field" placeholder="Student's name" />
+        <button class="panel" id="submitButton">Change Name</button>
+    </div>
+</body>
+</html>
+<script>
+    const socket = io();
+    const submitButton = document.getElementById('submitButton');
+    const usernameInput = document.getElementById('usernameInput');
+
+    // Send username data in real-time
+    submitButton.addEventListener('click', () => {
+        socket.emit('save-username-to-cache', usernameInput.value.trim());
+    });
+</script>

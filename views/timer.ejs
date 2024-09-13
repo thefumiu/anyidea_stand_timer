@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("parts/head", {title: title}) %>
+<body></body>
+    <div class="tmr username" id="username"></div>
+    <div class="tmr timer" id="timer">00:00.00</div>
+    <button class="tmr button" id="timerButton">Press to Start</button>
+</body>
+</html>
+<script>
+    const socket = io();
+    const targetTime = 600000; // 10 minutes in milliseconds
+    let startTime;
+    let countUpInterval;
+    let isCounting = false;
+    let username = "Noone";
+    const timerElement = document.getElementById('timer');
+    const timerButton = document.getElementById('timerButton');
+    const usernameElement = document.getElementById('username');
+    
+    function formatTime(milliseconds) {
+        const minutes = Math.floor(milliseconds / 60000);
+        const seconds = Math.floor((milliseconds % 60000) / 1000);
+        const millis = Math.floor((milliseconds % 1000) / 10);
+        return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0') + "." + millis.toString().padStart(2, '0');
+    }
+    function buttonToggle() {
+        if (!isCounting) {
+            isCounting = true;
+            timerButton.innerHTML = "Press to Stop";
+            timerButton.setAttribute("class", "tmr button x");
+            startTime = Date.now();
+            countUpInterval = setInterval(() => {
+                const elapsedTime = Date.now() - startTime;
+                if (elapsedTime >= targetTime) {
+                    clearInterval(countUpInterval);
+                    timerElement.textContent = formatTime(targetTime);
+                    isCounting = false;
+                } else {
+                    timerElement.textContent = formatTime(elapsedTime);
+                }
+            }, 10);
+        } else {
+            isCounting = false;
+            clearInterval(countUpInterval);
+            timerButton.innerHTML = "Press to Start";
+            timerButton.setAttribute("class", "tmr button");
+            const elapsedTime = Date.now() - startTime;
+            const formattedTime = formatTime(elapsedTime);
+            // Send leaderboard data in real-time
+            socket.emit("update-leaderboard", {username, time: formattedTime});
+        }
+    }
+    timerButton.addEventListener('click', async () => {
+        buttonToggle();
+    });
+
+    socket.on('click-from-external-button', () => {
+        buttonToggle();
+    });
+
+    // Get username data in real-time
+    socket.on('save-username-to-cache', (data) => {
+        username = data;
+        usernameElement.innerHTML = username + " is playing.";
+    });
+</script>

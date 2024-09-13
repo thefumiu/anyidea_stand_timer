@@ -10,8 +10,13 @@
     --color-ol: #f0a23aff;
     --color-od: #2f2006ff;
 }
-body {
+* {
     font-family: "opensans";
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -19,107 +24,125 @@ body {
     height: 100vh;
     margin: 0;
     background-color: black;
+    user-select: none;
+    color: white;
 }
 
 /* HOME */
-.title {
-    font-size: 48px;
-    margin-bottom: 30px;
-}
-.button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.button {
-    padding: 15px 30px;
-    font-size: 24px;
-    color: white;
-    background-color: var(--color-l);
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    border-radius: 5px;
-}
-.button:hover {
-    background-color: #555;
-}
-
-/* TIMER */ 
-.timer_timer {
-    font-size: calc(100vw * 80/100 / 4.3);
-    font-weight: 900;
-    color: white;
-}
-.timer_username , .timer_target {
-    display: inline-block;
-    font-size: 24px;
-    font-weight: 100;
-    color: var(--color-ol);
-}
-.timer_username {
-    color: #646464;
-}
-.timer_button {
+a.home {
     /*display: none;*/
-    font-family: "opensans";
     font-weight: 100;
     padding: 12px 24px;
     margin: 0 0 24px 0;
     font-size: 24px;
+    color: var(--color-l);
+    background: var(--color-d);
+    border: none;
+    border-radius: 100px;
+}
+
+/* TIMER */ 
+.timer.tmr {
+    font-size: calc(100vw * 80/100 / 4.3);
+    font-weight: 900;
+    color: white;
+}
+.username.tmr , .target.tmr {
+    display: inline-block;
+    font-weight: 100;
+    font-size: 20px;
+    color: var(--color-ol);
+}
+.button.tmr {
+    /*display: none;*/
+    font-weight: 100;
+    padding: 12px 24px;
+    margin: 0 0 24px 0;
+    font-size: 20px;
     color: var(--color-gl);
     background-color: var(--color-gd);
     border: none;
     border-radius: 100px;
 }
-.timer_button:hover {
+.button:hover.tmr {
     opacity: 0.9;
 }
-.timer_button:active {
+.button:active.tmr {
     opacity: 0.6;
 }
-.timer_button.x {
+.button.x.tmr {
     color: var(--color-ol);
     background-color: var(--color-od);
 }
 
 /* LEADERBOARD */
-.button {
-    padding: 10px 20px;
-    font-size: 20px;
-    color: white;
-    background-color: #333;
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-}
-.button:hover {
-    background-color: #555;
-}
-table {
+h1.lb {
+    font-size: 48px;
+    text-align: center;
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    margin-bottom: 24px;
 }
-th, td {
-    border: 1px solid white;
-    padding: 8px;
+#lb {
+    display: flex;
+    width: max(60vw, 500px);
+    margin: auto;
+    min-height: 300px;
+    flex-direction: column;
+}
+.lb_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    font-size: 20px;
+    font-weight: 100;
+}
+.lb_item:nth-child(1) span {
+    font-size: 33px;
+    font-weight: 400;
+}
+.lb_item:nth-child(2) span {
+    font-size: 28px;
+}
+.lb_item:nth-child(3) span {
+    font-size: 24px;
+}
+.lb_item:nth-child(1) span:first-child::before {
+    content: "🥇";
+}
+.lb_item:nth-child(2) span:first-child::before {
+    content: "🥈";
+}
+.lb_item:nth-child(3) span:first-child::before {
+    content: "🥉";
+}
+.lb_item span {
+    text-align: center;
+}
+.lb_item span:first-child::before {
+    display: block;
+    position: absolute;
+    transform: translateX(-140%);
 }
 
-/* USERNAME */
-.input-field {
-    font-size: 20px;
-    padding: 10px;
-    margin-bottom: 20px;
+.lb_item span:nth-child(2) {
+    text-align: center;
+    color: var(--color-ol);
 }
-.button {
-    padding: 10px 20px;
+
+/* Panel */
+.input-field.panel {
     font-size: 20px;
-    color: white;
-    background-color: #333;
+    padding: 12px 24px;
+    border: none;
+    outline: none;
+}
+button.panel {
+    padding: 12px 24px;
+    font-size: 20px;
+    color: var(--color-l);
+    background: var(--color-d);
     border: none;
     cursor: pointer;
-}
-.button:hover {
-    background-color: #555;
 }

@@ -25,22 +25,23 @@ const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.static("files"));
+app.set('view engine', 'ejs');
 
 // GET Methods
 app.get('/', (req, res) => {
-    res.sendFile(path.join('index.html'));
+    res.render('index.ejs', {title: "Home"});
 });
 
 app.get('/timer', (req, res) => {
-    res.sendFile(path.join(__dirname, 'timer.html'));
+    res.render('timer.ejs', {title: "Timer"});
 });
 
-app.get('/username', (req, res) => {
-    res.sendFile(path.join(__dirname, 'username.html'));
+app.get('/panel', (req, res) => {
+    res.render('panel.ejs', {title: "Panel"});
 });
 
 app.get('/leaderboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'leaderboard.html'));
+    res.render('leaderboard.ejs', {title: "Leaderboard"});
 });
 
 app.post('/only-for-external-button', (req, res) => {

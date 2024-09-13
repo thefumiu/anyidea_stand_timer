@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include("parts/head", {title: title}) %>
+<body>
+    <div class="container">
+        <h1 class="lb">⏳Leaderboard⏳</h1>
+        <div id="lb">
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    const socket = io();
+    
+    function updateLeaderboard(data) {
+        const lb = document.getElementById('lb');
+        for (let i = 0; i < data.length; i++) {
+            if (i > 11) {
+                break;
+            }
+            else {
+                lb.innerHTML += "<div class=\"lb_item\"><span>" + data[i].username + "</span><span>" + data[i].time + "</span></div>"
+            }
+        }
+    }
+    // Get leaderboard data in real-time
+    socket.on("update-leaderboard", data => {
+        updateLeaderboard(data);
+    });
+</script>
