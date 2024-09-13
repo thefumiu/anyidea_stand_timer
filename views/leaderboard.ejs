@@ -4,28 +4,32 @@
 <body>
     <div class="container">
         <h1 class="lb">⏳Leaderboard⏳</h1>
-        <div id="lb">
-        </div>
+        <div id="lb"></div>
     </div>
 </body>
-</html>
 <script>
     const socket = io();
-    
+
     function updateLeaderboard(data) {
         const lb = document.getElementById('lb');
         lb.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             if (i > 11) {
                 break;
-            }
-            else {
-                lb.innerHTML += "<div class=\"lb_item\"><span>" + data[i].username + "</span><span>" + data[i].time + "</span></div>"
+            } else {
+                lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].time}</span></div>`;
             }
         }
     }
-    // Get leaderboard data in real-time
+
+    // Listen for real-time updates from the server
     socket.on("update-leaderboard", data => {
         updateLeaderboard(data);
     });
+
+    // Request the leaderboard data when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        socket.emit('request-leaderboard'); // Emit a request to fetch the latest leaderboard
+    });
 </script>
+</html>

@@ -54,20 +54,34 @@ app.post('/only-for-external-button', (req, res) => {
 
 // Socket.io setup
 io.on('connection', (socket) => {
-    // Fetching data from /username
-    socket.on('save-username-to-cache', async (data) => {
-        // Global variable (not cookies)
+    // Send the current username to the client if it exists
+    if (tmp_username) {
+        socket.emit('save-username-to-cache', tmp_username);
+    }
+
+    // Send the current leaderboard to the client
+    (async () => {
+        try {
+            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(10);
+            socket.emit('update-leaderboard', leaderboard);
+        } catch (error) {
+            console.error('request-leaderboard:', error);
+        }
+    })();
+
+    // Handle saving the username
+    socket.on('save-username-to-cache', (data) => {
         tmp_username = data;
         io.emit("save-username-to-cache", data);
-        console.log("Username setted: ", tmp_username);
-        
+        console.log("Username set: ", tmp_username);
     });
-    // Updating Leaderboard with new data
+
+    // Handle updating the leaderboard
     socket.on('update-leaderboard', async (data) => {
         try {
-            const newEntry = new Leaderboard({username: data.username, time: data.time, timex: data.timex}); 
+            const newEntry = new Leaderboard({ username: data.username, time: data.time, timex: data.timex });
             await newEntry.save();
-            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(10); 
+            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(10);
             io.emit('update-leaderboard', leaderboard); // Notify all clients to update leaderboard
         } catch (error) {
             console.error('update-leaderboard:', error);
