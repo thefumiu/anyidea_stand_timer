@@ -14,6 +14,7 @@
     
     function updateLeaderboard(data) {
         const lb = document.getElementById('lb');
+        lb.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             if (i > 11) {
                 break;
