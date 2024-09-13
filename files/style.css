@@ -1,0 +1,125 @@
+@font-face {
+    font-family: "opensans";
+    src: url("opensans.ttf");
+}
+:root {
+    --color-l: #8d8d92ff;
+    --color-d: #1b1b1cff;
+    --color-gl: #2ecb55ff;
+    --color-gd: #092a11ff;
+    --color-ol: #f0a23aff;
+    --color-od: #2f2006ff;
+}
+body {
+    font-family: "opensans";
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: black;
+}
+
+/* HOME */
+.title {
+    font-size: 48px;
+    margin-bottom: 30px;
+}
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.button {
+    padding: 15px 30px;
+    font-size: 24px;
+    color: white;
+    background-color: var(--color-l);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.button:hover {
+    background-color: #555;
+}
+
+/* TIMER */ 
+.timer_timer {
+    font-size: calc(100vw * 80/100 / 4.3);
+    font-weight: 900;
+    color: white;
+}
+.timer_username , .timer_target {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 100;
+    color: var(--color-ol);
+}
+.timer_username {
+    color: #646464;
+}
+.timer_button {
+    /*display: none;*/
+    font-family: "opensans";
+    font-weight: 100;
+    padding: 12px 24px;
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    color: var(--color-gl);
+    background-color: var(--color-gd);
+    border: none;
+    border-radius: 100px;
+}
+.timer_button:hover {
+    opacity: 0.9;
+}
+.timer_button:active {
+    opacity: 0.6;
+}
+.timer_button.x {
+    color: var(--color-ol);
+    background-color: var(--color-od);
+}
+
+/* LEADERBOARD */
+.button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: white;
+    background-color: #333;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.button:hover {
+    background-color: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid white;
+    padding: 8px;
+}
+
+/* USERNAME */
+.input-field {
+    font-size: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.button {
+    padding: 10px 20px;
+    font-size: 20px;
+    color: white;
+    background-color: #333;
+    border: none;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #555;
+}

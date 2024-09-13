@@ -24,10 +24,11 @@ const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(express.static("files"));
 
 // GET Methods
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join('index.html'));
 });
 
 app.get('/timer', (req, res) => {

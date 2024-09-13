@@ -3,51 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Any Idea Timer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: black;
-        }
-        .target {
-            font-size: 30px;
-            color: white;
-            margin-bottom: 10px;
-        }
-        .timer {
-            font-size: 96px;
-            color: white;
-            margin-bottom: 20px;
-        }
-        .username {
-            font-size: 36px;
-            color: white;
-            margin-bottom: 10px;
-        }
-        .button {
-            padding: 10px 20px;
-            font-size: 20px;
-            color: white;
-            background-color: #333;
-            border: none;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #555;
-        }
-    </style>
+    <title>AnyIdea Timer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="username" id="username">Username: Not set</div>
-<div class="target">Target: 00:10.00</div>
-<div class="timer" id="timer">00:00.00</div>
-<button class="button" id="timerButton">Start Timer</button>
+    <div class="timer_target">Target: 00:10.00</div>
+    <div class="timer_timer" id="timer">00:00.00</div>
+    <button class="timer_button" id="timerButton">Start Timer</button>
+    <div class="timer_username" id="username">Username: Not set</div>
+</body>
+</html>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -80,7 +45,7 @@ function buttonToggle() {
     if (!isCounting) {
         isCounting = true;
         timerButton.innerHTML = "Stop Timer";
-        timerButton.style.background = "#d44";
+        timerButton.setAttribute("class", "timer_button x");
         startTime = Date.now();
         countUpInterval = setInterval(() => {
             const elapsedTime = Date.now() - startTime;
@@ -96,7 +61,7 @@ function buttonToggle() {
         isCounting = false;
         clearInterval(countUpInterval);
         timerButton.innerHTML = "Start Timer";
-        timerButton.style.background = "#333";
+        timerButton.setAttribute("class", "timer_button");
         const elapsedTime = Date.now() - startTime;
         const formattedTime = formatTime(elapsedTime);
 
@@ -119,5 +84,3 @@ socket.on('save-username-to-cache', (newUsername) => {
     usernameElement.textContent = `Username: ${username}`;
 });
 </script>
-</body>
-</html>
