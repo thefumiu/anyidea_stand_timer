@@ -5,17 +5,54 @@
     <div class="container panel">
         <h1>Enter Student's Name</h1>
         <input type="text" id="usernameInput" class="panel input-field" placeholder="Student's name" />
-        <button class="panel" id="submitButton">Change Name</button>
+        <button class="panel" id="submitButton">Submit Name</button>
+        
+        <!-- Error Message -->
+        <div id="errorBox" style="display: none;">
+            <p id="errorMessage"></p>
+            <button id="reenterButton">Re-enter Name</button>
+            <button id="suffixButton">Add with Suffix</button>
+        </div>
     </div>
 </body>
-</html>
+
 <script>
     const socket = io();
     const submitButton = document.getElementById('submitButton');
     const usernameInput = document.getElementById('usernameInput');
+    const errorBox = document.getElementById('errorBox');
+    const errorMessage = document.getElementById('errorMessage');
+    const reenterButton = document.getElementById('reenterButton');
+    const suffixButton = document.getElementById('suffixButton');
+    let currentUsername = "";
+    let currentCount = 0;
 
-    // Send username data in real-time
+    // Submit the username
     submitButton.addEventListener('click', () => {
-        socket.emit('save-username-to-cache', usernameInput.value.trim());
+        const username = usernameInput.value.trim();
+        if (username) {
+            socket.emit('check-username', { username });
+        }
+    });
+
+    // Handle when the username exists
+    socket.on('username-exists', (data) => {
+        errorMessage.textContent = `The username "${data.username}" already exists. Do you want to enter another name or add a number suffix (e.g., "${data.username}(${data.count + 1})")?`;
+        errorBox.style.display = 'block';
+        currentUsername = data.username;
+        currentCount = data.count;
+    });
+
+    // Re-enter the name
+    reenterButton.addEventListener('click', () => {
+        errorBox.style.display = 'none';
+        usernameInput.value = ""; // Clear the input field
+    });
+
+    // Add the name with a suffix
+    suffixButton.addEventListener('click', () => {
+        socket.emit('save-username-with-suffix', { username: currentUsername, count: currentCount + 1 });
+        errorBox.style.display = 'none';
     });
 </script>
+</html>

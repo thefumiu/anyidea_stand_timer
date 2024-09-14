@@ -87,6 +87,33 @@ io.on('connection', (socket) => {
             console.error('update-leaderboard:', error);
         }
     });
+
+     // Check if the username exists and handle accordingly
+     socket.on('check-username', async (data) => {
+        try {
+            let existingUserCount = await Leaderboard.countDocuments({ username: new RegExp(`^${data.username}(\\(\\d+\\))?$`, 'i') });
+
+            if (existingUserCount === 0) {
+                // Username doesn't exist, save it
+                tmp_username = data.username;
+                io.emit('save-username-to-cache', tmp_username);
+                socket.emit('username-accepted', tmp_username);
+            } else {
+                // Username exists, send error with the option to modify
+                socket.emit('username-exists', { username: data.username, count: existingUserCount });
+            }
+        } catch (error) {
+            console.error('check-username error:', error);
+        }
+    });
+
+    // Handle saving username with a number suffix
+    socket.on('save-username-with-suffix', (data) => {
+        tmp_username = `${data.username}(${data.count})`;
+        io.emit('save-username-to-cache', tmp_username);
+        socket.emit('username-accepted', tmp_username);
+    });
+    
 });
 
 server.listen(8082, () => {
