@@ -21,15 +21,11 @@
             }
         }
     }
-
     // Listen for real-time updates from the server
     socket.on("update-leaderboard", data => {
-        updateLeaderboard(data);
+        if (data.username != "") updateLeaderboard(data);
     });
 
-    // Request the leaderboard data when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        socket.emit('request-leaderboard'); // Emit a request to fetch the latest leaderboard
-    });
+    window.onload = () => {socket.emit("update-leaderboard-once");}
 </script>
 </html>

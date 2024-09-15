@@ -48,7 +48,7 @@
             const elapsedTime = Date.now() - startTime;
             const formattedTime = formatTime(elapsedTime);
             // Send leaderboard data in real-time
-            socket.emit("update-leaderboard", { username, time: formattedTime, timex: Math.abs(10000 - elapsedTime) });
+            if (username != "") socket.emit("update-leaderboard", { username, time: formattedTime, timex: Math.abs(10000 - elapsedTime) });
         }
     }
 
@@ -61,14 +61,10 @@
     });
 
     // Get username data in real-time
-    socket.on('save-username-to-cache', (data) => {
+    socket.on('update-username', (data) => {
         username = data;
-        usernameElement.innerHTML = username + " is playing.";
-    });
-
-    // Request username when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        socket.emit('request-username'); // Emit a request to fetch the current username
+        usernameElement.innerHTML = "";
+        if (data != "") usernameElement.innerHTML = username + " is playing.";
     });
 </script>
 </html>
