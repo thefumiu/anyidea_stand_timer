@@ -16,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/timerDB').then(() => console.log('Mo
 const leaderboardSchema = new mongoose.Schema({
     username: String,
     time: String,
-    timex: String
+    timex: Number
 });
 
 const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);

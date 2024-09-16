@@ -14,16 +14,12 @@
         const lb = document.getElementById('lb');
         lb.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
-            if (i > 11) {
-                break;
-            } else {
-                lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].time}</span></div>`;
-            }
+            lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].timex}</span></div>`;
         }
     }
     // Listen for real-time updates from the server
     socket.on("update-leaderboard", data => {
-        if (data.username != "") updateLeaderboard(data);
+        updateLeaderboard(data);
     });
 
     window.onload = () => {socket.emit("update-leaderboard-once");}
