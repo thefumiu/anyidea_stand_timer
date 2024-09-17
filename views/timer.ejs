@@ -66,5 +66,7 @@
         usernameElement.innerHTML = "";
         if (data != "") usernameElement.innerHTML = username + " is playing.";
     });
+
+    window.onload = () => socket.emit("fetch-username");
 </script>
 </html>
