@@ -10,7 +10,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 let tmp_username;
-let max_user_at_leaderboard = 8;
+let max_user_at_leaderboard = 11;
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/timerDB').then(() => console.log('MongoDB connected...')).catch(err => console.error('MongoDB connection error:', err));
@@ -87,7 +87,7 @@ app.post('/only-for-external-button', (req, res) => {
 // Socket.io setup
 io.on('connection', (socket) => {
      // Check if the username exists and handle accordingly
-    socket.on('update-username', async (data, mode) => {
+    socket.on('update-username', async (data) => {
         try {
             const existingUserCount = await Leaderboard.countDocuments({ username: new RegExp(`^${data.username}(\\(\\d+\\))?$`, 'i') });
             tmp_username = data.username;
@@ -99,6 +99,10 @@ io.on('connection', (socket) => {
             io.emit("error", {code: 2, text: "Database connection at update-username."});
         }
     });
+    socket.on('fetch-username', () => {
+        if (tmp_username) io.emit('update-username', tmp_username);
+        else io.emit("error", {code: 4, text: "No saved username fetch-username."});
+    });
 
     // Handle updating the leaderboard
     socket.on('update-leaderboard', async (data) => {
@@ -107,7 +111,7 @@ io.on('connection', (socket) => {
             if (existingUserCount == 0) await Leaderboard({ username: data.username, time: data.time, timex: data.timex }).save();
             else await Leaderboard.findOneAndUpdate({username: data.username},{time: data.time, timex: data.timex}, {new: true});
             
-            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(11);
+            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(max_user_at_leaderboard);
             io.emit('update-leaderboard', leaderboard);
         } catch (error) {
             console.error(error);
@@ -117,7 +121,7 @@ io.on('connection', (socket) => {
 
     socket.on('update-leaderboard-once', async () => {
         try {
-            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(11);
+            const leaderboard = await Leaderboard.find().sort({ timex: 1 }).limit(max_user_at_leaderboard);
             io.emit('update-leaderboard', leaderboard); // Notify all clients to update leaderboard
         } catch (error) {
             console.error(error);

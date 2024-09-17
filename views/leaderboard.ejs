@@ -14,7 +14,8 @@
         const lb = document.getElementById('lb');
         lb.innerHTML = "";
         for (let i = 0; i < data.length; i++) {
-            lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].timex}</span></div>`;
+            // if you want to see distance bwtween 10sec and current sec make data[i].time  ->  data[i].timex
+            lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].time}</span></div>`;
         }
     }
     // Listen for real-time updates from the server
