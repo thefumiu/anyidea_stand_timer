@@ -5,46 +5,52 @@ import socket
 # GPIO setup for the push button
 button = Pin(14, Pin.IN, Pin.PULL_UP)
 
-# Timer logic
-is_timer_running = False
+# Timer state management
+isTimerRunning = False
 
-def start_timer(t):
-    global is_timer_running
-    if not is_timer_running:
-        is_timer_running = True
+def startTimer(timer):
+    global isTimerRunning
+    if not isTimerRunning:
+        isTimerRunning = True
         print("Timer started!")
+        timer.init(period=1000, mode=Timer.ONE_SHOT, callback=lambda t: stopTimer())
     else:
         print("Timer already running!")
 
-# Function to handle button press
-def check_button_press():
+def stopTimer():
+    global isTimerRunning
+    isTimerRunning = False
+    print("Timer stopped!")
+
+# Function to check button press
+def checkButtonPress():
     return button.value() == 0
 
-# Setting up socket communication
-def setup_socket():
+# Setup socket communication
+def setupSocket():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('0.0.0.0', 1234))
+    s.bind(('0.0.0.0', 1234))  
     s.listen(1)
     print("Waiting for connection....")
-    conn, addr = s.accept()
+    conn, addr = s.accept()  
     print("Connected by", addr)
     return conn
 
 # Main loop
 def main():
-    timer = Timer()
-    conn = setup_socket()
+    timer = Timer()  
+    conn = setupSocket()  
 
     while True:
-        # Check if button is pressed
-        if check_button_press():
-            start_timer(timer)
-            conn.send(b'Button pressed\n')
+        if checkButtonPress(): 
+            startTimer(timer)   
+            conn.send(b'Button pressed\n')  
             print("Message sent")
 
-        time.sleep(0.1)
+        time.sleep(0.1)  
 
 main()
+
 
 
 
