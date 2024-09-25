@@ -8,6 +8,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 let tmp_username;
+let max_user_at_leaderboard = 8;
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/timerDB').then(() => console.log('MongoDB connected...')).catch(err => console.error('MongoDB connection error:', err));
