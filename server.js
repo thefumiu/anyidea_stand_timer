@@ -4,6 +4,8 @@ const { Server } = require('socket.io');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const net = require('net');  //module for TCP sockets (JUST DELETE IT IF IT DOESN'T WORK)
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -21,6 +23,37 @@ const leaderboardSchema = new mongoose.Schema({
 });
 
 const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
+
+// JUST DELETE IT IF IT DOESN'T WORK
+//
+// TCP Socket Server for Pico
+const tcpServer = net.createServer((socket) => {
+    console.log('Pico connected via TCP');
+    socket.on('data', (data) => {
+        const message = data.toString().trim();
+        if (message === "BUTTON_PRESSED") {  // spesific message in alternative py code
+            console.log("Physical button pressed on Pico");
+            io.emit("click-from-external-button");  // Emit to all connected clients (triggers button)
+        }
+    });
+
+    socket.on('end', () => {
+        console.log('Pico disconnected');
+    });
+
+    socket.on('error', (err) => {
+        console.error('Socket error:', err);
+    });
+});
+
+// Start the TCP Socket Server
+tcpServer.listen(8082, () => {
+    console.log('TCP Server running on port 8082');
+});
+
+// JUST DELETE IT IF IT DOESN'T WORK
+//
+//
 
 // Middleware to parse JSON
 app.use(express.json());
