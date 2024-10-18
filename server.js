@@ -4,54 +4,42 @@ const { Server } = require('socket.io');
 const path = require('path');
 const mongoose = require('mongoose');
 
+// SETUP - express, server
 const app = express();
+app.use(express.json());
+app.use(express.static("css"));
+app.set('view engine', 'ejs');
 const server = createServer(app);
 const io = new Server(server);
+
+// GLOBAL
 let tmp_username;
 let max_user_at_leaderboard = 11;
 
-// Connect to MongoDB
+// SETUP - database
 mongoose.connect('mongodb://localhost:27017/timerDB').then(() => console.log('MongoDB connected...')).catch(err => console.error('MongoDB connection error:', err));
-
-// Define Schema and Model
 const leaderboardSchema = new mongoose.Schema({
     username: String,
     time: String,
     timex: Number
 });
-
 const Leaderboard = mongoose.model('Leaderboard', leaderboardSchema);
 
-// Middleware to parse JSON
-app.use(express.json());
-app.use(express.static("files"));
-app.set('view engine', 'ejs');
-
-// GET Methods
+// METHODS
 app.get('/', (req, res) => {
     res.render('index.ejs', {title: "Home"});
 });
-
 app.get('/timer', (req, res) => {
     res.render('timer.ejs', {title: "Timer"});
 });
-
 app.get('/panel', (req, res) => {
     res.render('panel.ejs', {title: "Panel"});
 });
-
 app.get('/leaderboard', (req, res) => {
     res.render('leaderboard.ejs', {title: "Leaderboard"});
 });
 
-app.post('/only-for-external-button', (req, res) => {
-    console.log("external-pressed");
-    res.sendStatus(200);
-    
-    io.emit("click-from-external-button");
-});
-
-// Socket.io setup
+// SOCKET
 io.on('connection', (socket) => {
      // Check if the username exists and handle accordingly
     socket.on('update-username', async (data) => {
@@ -97,6 +85,7 @@ io.on('connection', (socket) => {
     });
 });
 
+// LAUNCH
 server.listen(8082, () => {
     console.log('Server running at http://localhost:8082');
 });

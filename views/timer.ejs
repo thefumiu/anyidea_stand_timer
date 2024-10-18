@@ -56,10 +56,6 @@
         buttonToggle();
     });
 
-    socket.on('click-from-external-button', () => {
-        buttonToggle();
-    });
-
     // Get username data in real-time
     socket.on('update-username', (data) => {
         username = data;
