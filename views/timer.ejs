@@ -3,12 +3,12 @@
 <%- include("parts/head", {title: title}) %>
 <body>
     <div class="tmr username" id="username"></div>
-    <div class="tmr timer" id="timer">00:00.00</div>
+    <div class="tmr timer" id="timer">00:00.000</div>
     <button class="tmr button" id="timerButton">Press to Start</button>
 </body>
 <script>
     const socket = io();
-    const targetTime = 600000; // 10 minutes in milliseconds
+    const targetTime = 6000000; // 10 minutes in milliseconds
     let startTime;
     let countUpInterval;
     let isCounting = false;
@@ -18,43 +18,51 @@
     const usernameElement = document.getElementById('username');
 
     function formatTime(milliseconds) {
-        const minutes = Math.floor(milliseconds / 60000);
-        const seconds = Math.floor((milliseconds % 60000) / 1000);
-        const millis = Math.floor((milliseconds % 1000) / 10);
-        return minutes.toString().padStart(2, '0') + ":" + seconds.toString().padStart(2, '0') + "." + millis.toString().padStart(2, '0');
-    }
+    const minutes = Math.floor(milliseconds / 60000);
+    const seconds = Math.floor((milliseconds % 60000) / 1000);
+    const millis = Math.floor(milliseconds % 1000);
 
-    function buttonToggle() {
-        if (!isCounting) {
-            isCounting = true;
-            timerButton.innerHTML = "Press to Stop";
-            timerButton.setAttribute("class", "tmr button x");
-            startTime = Date.now();
-            countUpInterval = setInterval(() => {
-                const elapsedTime = Date.now() - startTime;
-                if (elapsedTime >= targetTime) {
-                    clearInterval(countUpInterval);
-                    timerElement.textContent = formatTime(targetTime);
-                    isCounting = false;
-                } else {
-                    timerElement.textContent = formatTime(elapsedTime);
-                }
-            }, 10);
-        } else {
-            isCounting = false;
-            clearInterval(countUpInterval);
-            timerButton.innerHTML = "Press to Start";
-            timerButton.setAttribute("class", "tmr button");
-            const elapsedTime = Date.now() - startTime;
-            const formattedTime = formatTime(elapsedTime);
-            // Send leaderboard data in real-time
-            if (username != "") socket.emit("update-leaderboard", { username, time: formattedTime, timex: Math.abs(10000 - elapsedTime) });
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis.toString().padStart(3, '0')}`;
+}
+
+let elapsedTime; // Declare this at a higher scope so it's accessible later
+
+function buttonToggle() {
+    if (!isCounting) {
+        isCounting = true;
+        timerButton.innerHTML = "Press to Stop";
+        timerButton.setAttribute("class", "tmr button x");
+        startTime = Date.now();
+        countUpInterval = setInterval(() => {
+            elapsedTime = Date.now() - startTime; // Calculate elapsed time
+            timerElement.textContent = formatTime(elapsedTime); // Update displayed timer
+        }, 10);
+    } else {
+        isCounting = false;
+        clearInterval(countUpInterval);
+        timerButton.innerHTML = "Press to Start";
+        timerButton.setAttribute("class", "tmr button");
+        
+        // Use the same elapsedTime variable for the leaderboard
+        const formattedTime = formatTime(elapsedTime); // Format for display
+
+        // Emit the leaderboard update
+        if (username !== "") {
+            socket.emit("update-leaderboard", {
+                username,
+    time: formattedTime, // This should match the displayed time in the game
+    timex: Math.abs(10000 - elapsedTime) // Used for sorting
+            });
         }
     }
+}
 
-    timerButton.addEventListener('click', async () => {
-        buttonToggle();
-    });
+timerButton.addEventListener('click', async () => {
+    buttonToggle();
+});
+
+// Make sure to use the formatted time when displaying it
+const formattedTime = formatTime(elapsedTime); // This should always reflect the same elapsed time
 
     // Get username data in real-time
     socket.on('update-username', (data) => {

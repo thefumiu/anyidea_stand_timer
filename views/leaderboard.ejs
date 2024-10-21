@@ -10,14 +10,20 @@
 <script>
     const socket = io();
 
+    // Inside the updateLeaderboard function
     function updateLeaderboard(data) {
-        const lb = document.getElementById('lb');
-        lb.innerHTML = "";
-        for (let i = 0; i < data.length; i++) {
-            // if you want to see distance bwtween 10sec and current sec make data[i].time  ->  data[i].timex
-            lb.innerHTML += `<div class="lb_item"><span>${data[i].username}</span><span>${data[i].time}</span></div>`;
-        }
+    const lb = document.getElementById('lb');
+    lb.innerHTML = "";
+
+    if (data.length === 0) {
+        lb.innerHTML = "<div>No entries yet.</div>";
+        return;
     }
+
+    for (let i = 0; i < data.length; i++) {
+        lb.innerHTML += `<div class="lb_item"><span>${i + 1}. ${data[i].username}</span><span>${data[i].time}</span></div>`;
+    }
+}
     // Listen for real-time updates from the server
     socket.on("update-leaderboard", data => {
         updateLeaderboard(data);
